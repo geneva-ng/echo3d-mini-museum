@@ -1,0 +1,94 @@
+.textBackground.fade-in {
+  animation: fadeIn 1s ease forwards;
+  opacity: 0; 
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.textBackground.fade-out {
+  animation: fadeOut 1s ease forwards;
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.fade-out {
+    animation: fadeOut 1s ease-in forwards;
+}
+
+
+@font-face {
+  font-family: 'Chopin';
+  src: url('/fonts/Chopin-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Louis';
+  src: url('/fonts/Louis George Cafe Light.ttf') format('truetype');
+}
+
+body { margin: 0; }
+.a-canvas { cursor: pointer; }
+
+.textBackground {
+  position: absolute;
+  width: auto;
+  padding: 40px;
+  background-color: #2D2A25;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: auto;
+  animation: fadeIn 1s forwards;
+}
+
+.closeButton {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding: 2px 5px;
+  cursor: pointer;
+  color: white;
+  font-family: 'Louis', sans-serif;
+  font-size: 10px;
+}
+
+.headerStyle {
+  font-weight: bold;
+  color: #FFF;
+  font-size: 18px;
+  text-align: left;
+  font-family: 'Chopin', sans-serif;
+  text-transform: uppercase;
+  line-height: 1.1;
+  letter-spacing: 2px;
+}
+
+.date {
+  font-weight: normal;
+  color: #FFF;
+  font-size: 8px;
+  margin: 3px 0px 15px;
+  text-align: left;
+  font-family: 'Chopin', sans-serif;
+  line-height: 1.2;
+  letter-spacing: 0.8px;
+}
+
+.bodyStyle {
+  font-weight: normal;
+  color: #FFF;
+  font-size: 12px;
+  text-align: left;
+  font-family: 'Chopin', sans-serif;
+  line-height: 1.2;
+  letter-spacing: 0.8px;
+}

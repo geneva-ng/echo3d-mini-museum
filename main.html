@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
+
+    <title>Mini Museum</title>
+
+</head>
+<body>
+
+
+    <!-- AFRAME SCENE -->
+    <a-scene cursor="rayOrigin: mouse">
+
+
+
+        <a-entity environment="preset: forest; 
+                        dressingAmount: 700; 
+                        dressingScale: 3;
+                        groundTexture: walkernoise;
+                        ground: noise;
+                        lighting: point;
+                        groundColor: #670;
+                        groundColor2: #450;
+                        playArea: 1;
+                        skyType: gradient;
+                        skyColor: #49e;
+                        lighting: distant;
+                        horizonColor: #def;"
+        ></a-entity>
+
+        <!-- LOAD ALL HOTSPOTS -->
+        <a-assets>
+            <a-mixin id="hotspot" geometry="primitive: box" material="opacity: 0; transparent: true" scale="1 4 1"></a-mixin>
+        </a-assets>
+
+        <!-- LOAD SCENE (FROM FETCH-LOAD.HTML) -->
+        <a-camera position="0 3.5 0"></a-camera> 
+        <a-entity id="scene" position="0 0 0" rotation="0 90 0"></a-entity> <!-- statue objects -->
+
+    </a-scene>
+
+    <!-- INDEX.JS LINK for hotspots, includes model loading functions -->
+    <script type="module" src="js/index.js"></script>
+
+    </script>   
+</body>
+</html>
