@@ -1,13 +1,12 @@
 import { bernini } from './bernini.js';
 
-// from FETCH-LOAD.HTML
-const apiKey = 'rough-salad-7122';
+const apiKey = 'yourAPIKeyHere';
 
 let currentHotspotId = null;
 let currentTextContainer = null; 
 
 // LOAD BERNINI
-loadModel('f51145a0-9c97-4faa-b868-84972db8b99f',  'scene');
+loadModel('yourEntryIdHere',  'scene');
 
 // INIT HOTSPOTS FOR BERNINI
 document.addEventListener('DOMContentLoaded', function() {
