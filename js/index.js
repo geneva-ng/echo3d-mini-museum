@@ -1,19 +1,21 @@
 import { bernini } from './bernini.js';
-
-const apiKey = 'yourAPIKeyHere';
+import { apiKey, entryID, secKey } from './config.js';
 
 let currentHotspotId = null;
 let currentTextContainer = null; 
 
-// LOAD BERNINI
-loadModel('yourEntryIdHere',  'scene');
+// LOAD 3D MODEL
+loadModel(entryID,  'scene', secKey); 
 
 // INIT HOTSPOTS FOR BERNINI
 document.addEventListener('DOMContentLoaded', function() {
     createHotspots(bernini);
 });
 
-//create single
+// LISTENER FOR KEYPRESS EVENTS
+document.addEventListener('keydown', handleKeyDown);
+
+//create single hotspot
 function createHotspot(data, index) { 
     const hotspot = document.createElement('a-entity');
     
@@ -38,7 +40,7 @@ function createHotspot(data, index) {
     document.querySelector('a-scene').appendChild(hotspot);
 }
 
-//create set
+//create set of hotspots
 function createHotspots(hotspotsData) {
     hotspotsData.forEach((hotspotData, index) => {
         createHotspot(hotspotData, index); // Pass index here
@@ -99,9 +101,9 @@ function createTextContainer(hotspot) {
       }
 }
 
-// LOAD MODEL BY ENTRYID
-function loadModel(entryID, entityID) {
-    fetch(`https://api.echo3D.com/query?key=${apiKey}&entry=${entryID}`)
+// LOAD MODEL BY ENTRYID (REQUIRES SECKEY)
+function loadModel(entryID, entityID, secKey) {
+    fetch(`https://api.echo3D.com/query?key=${apiKey}&entry=${entryID}&secKey=${secKey}`)
         .then(response => {
             if (!response.ok) throw new Error('Network response was not ok');
             return response.json();
@@ -109,8 +111,19 @@ function loadModel(entryID, entityID) {
         .then(data => {
             const firstEntryKey = Object.keys(data.db)[0];
             const storageID = data.db[firstEntryKey].hologram.storageID;
-            console.log('Storage ID:', storageID);
-            document.querySelector(`#${entityID}`).setAttribute('gltf-model', `https://api.echo3D.com/query?key=${apiKey}&file=${storageID}`);
+            console.log('Storage ID:', storageID); 
+            document.querySelector(`#${entityID}`).setAttribute('gltf-model', `https://api.echo3D.com/query?key=${apiKey}&file=${storageID}&secKey=${secKey}`);
+       
         })
         .catch(error => console.error('Fetch error:', error));
+}
+
+// CLOSE OPENING SCENE ON KEYPRESS
+function handleKeyDown(event) {
+    if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        var textContainer = document.querySelector('#textContainer');
+        if (textContainer) {
+        textContainer.parentNode.removeChild(textContainer);
+        }
+    }
 }
