@@ -1,52 +1,129 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
+import { bernini } from './bernini.js';
+import { apiKey, entryID, secKey } from './config.js';
 
-    <title>Mini Museum</title>
+let currentHotspotId = null;
+let currentTextContainer = null; 
 
-</head>
-<body>
+// LOAD 3D MODEL
+loadModel(entryID,  'scene', secKey); 
 
+// INIT HOTSPOTS FOR BERNINI
+document.addEventListener('DOMContentLoaded', function() {
+    createHotspots(bernini);
+});
 
-    <!-- AFRAME SCENE -->
-    <a-scene cursor="rayOrigin: mouse">
+// LISTENER FOR KEYPRESS EVENTS
+document.addEventListener('keydown', handleKeyDown);
 
+//create single
+function createHotspot(data, index) { 
+    const hotspot = document.createElement('a-entity');
+    
+    // Set attributes from data
+    hotspot.setAttribute('position', data.position);
+    hotspot.setAttribute('scale', data.scale); 
+    hotspot.setAttribute('mixin', 'hotspot');
+    hotspot.setAttribute('class', 'interactive'); 
+    hotspot.setAttribute('data-hotspot-id', index.toString()); 
+    
+    hotspot.addEventListener('click', function() {
+        const hotspotId = this.getAttribute('data-hotspot-id');
+        if (currentHotspotId === hotspotId) {
+            return;
+        }
+        closeCurrentHotspot(); 
+        createTextContainer(data); 
+        currentHotspotId = hotspotId; 
+    });
+    
+    // Append the hotspot to the scene
+    document.querySelector('a-scene').appendChild(hotspot);
+}
 
+//create set
+function createHotspots(hotspotsData) {
+    hotspotsData.forEach((hotspotData, index) => {
+        createHotspot(hotspotData, index); // Pass index here
+    });
+}
 
-        <a-entity environment="preset: forest; 
-                        dressingAmount: 700; 
-                        dressingScale: 3;
-                        groundTexture: walkernoise;
-                        ground: noise;
-                        lighting: point;
-                        groundColor: #670;
-                        groundColor2: #450;
-                        playArea: 1;
-                        skyType: gradient;
-                        skyColor: #49e;
-                        lighting: distant;
-                        horizonColor: #def;"
-        ></a-entity>
+// CREATE HOTSPOT CONTENT
+function createTextContainer(hotspot) {
+    var textContainer = document.createElement('div');
+    textContainer.className = 'textBackground';
 
-        <!-- LOAD ALL HOTSPOTS -->
-        <a-assets>
-            <a-mixin id="hotspot" geometry="primitive: box" material="opacity: 0; transparent: true" scale="1 4 1"></a-mixin>
-        </a-assets>
+    // ADD "CLOSE" BUTTON + FUNCTIONALITY
+    var closeButton = document.createElement('div');
+    closeButton.textContent = 'x';
+    closeButton.className = 'closeButton';
+    closeButton.onclick = closeCurrentHotspot;
+    textContainer.appendChild(closeButton);
 
-        <!-- LOAD SCENE (FROM FETCH-LOAD.HTML) -->
-        <a-camera position="0 3.5 0"></a-camera> 
-        <a-entity id="scene" position="0 0 0" rotation="0 90 0"></a-entity> <!-- statue objects -->
+    // ADD HEADER
+    var headerText = document.createElement('div');
+    headerText.className = 'headerStyle';
+    headerText.textContent = hotspot.headerText;
+    textContainer.appendChild(headerText);
 
-    </a-scene>
+    // ADD DATE
+    var date = document.createElement('div');
+    date.className = 'date';
+    date.textContent = hotspot.date;
+    textContainer.appendChild(date);
 
-    <!-- INDEX.JS LINK for hotspots, includes model loading functions -->
-    <script type="module" src="js/index.js"></script>
+    // ADD BODY
+    var bodyText = document.createElement('div');
+    bodyText.className = 'bodyStyle';
+    bodyText.textContent = hotspot.bodyText;
+    textContainer.appendChild(bodyText);
 
-    </script>   
-</body>
-</html>
+    document.body.appendChild(textContainer);
+    currentTextContainer = textContainer; 
+}
+
+// CLOSE CURRENT HOTSPOT (both regular & overlap functionality)
+  function closeCurrentHotspot() {
+      if (currentTextContainer) {
+          const textContainerToRemove = currentTextContainer; 
+          currentTextContainer.classList.add('fade-out');
+          
+          setTimeout(() => {
+
+            if (textContainerToRemove && textContainerToRemove === currentTextContainer && textContainerToRemove.parentNode) {
+                  textContainerToRemove.parentNode.removeChild(textContainerToRemove);
+
+                  if (currentTextContainer === textContainerToRemove) {
+                      currentTextContainer = null;
+                      currentHotspotId = null; 
+                  }
+              }
+          }, 1000);
+      }
+}
+
+// LOAD MODEL BY ENTRYID (REQUIRES SECKEY)
+function loadModel(entryID, entityID, secKey) {
+    fetch(`https://api.echo3D.com/query?key=${apiKey}&entry=${entryID}&secKey=${secKey}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            const firstEntryKey = Object.keys(data.db)[0];
+            const storageID = data.db[firstEntryKey].hologram.storageID;
+            console.log('Storage ID:', storageID); 
+            document.querySelector(`#${entityID}`).setAttribute('gltf-model', `https://api.echo3D.com/query?key=${apiKey}&file=${storageID}&secKey=${secKey}`);
+       
+        })
+        .catch(error => console.error('Fetch error:', error));
+}
+
+// CLOSE OPENING SCENE ON KEYPRESS
+function handleKeyDown(event) {
+    if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        var textContainer = document.querySelector('#textContainer');
+        if (textContainer) {
+        textContainer.parentNode.removeChild(textContainer);
+        }
+    }
+}
