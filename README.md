@@ -7,7 +7,7 @@ Register for FREE at [Echo3D](https://console.echo3d.co/#/auth/register)
 ## Build
 - Clone this repo. 
 - Upload the .glb file to your Echo3D console. 
-- In `index.js`, set your API key (line 3) and model.glb’s entryID (line 9).
+- In `config.js`, set your API key, secKey (learn how to enable [her](https://docs.echo3d.com/web-console/settings-page/security#secret-key)) and model.glb’s entryID.
 
 ## Run
 To view the experience in your browser, start a live server, then open the file named main.html.
