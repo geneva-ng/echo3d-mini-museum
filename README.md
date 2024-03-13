@@ -10,7 +10,7 @@ Register for FREE at [Echo3D](https://console.echo3d.co/#/auth/register)
 - In `config.js`, set your API key, secKey (learn how to enable [here](https://docs.echo3d.com/web-console/settings-page/security#secret-key)), and model.glb’s entryID.
 
 ## Run
-To view the experience in your browser, start a live server, then open the file named main.html.
+To view the experience in your browser, open index.html on a live server.
 
 ![screenshot0](/screenshots/screenshot0.png)
 ![screenshot1](/screenshots/screenshot1.png)
